@@ -85,8 +85,13 @@ public class GridViewActivity extends AppCompatActivity
 
 	@Override
 	public void openDetailView(Movie movie) {
-		Intent intent = new Intent(GridViewActivity.this, DetailViewActivity.class);
-		intent.putExtra(MOVIE_EXTRA_KEY, movie);
-		startActivity(intent);
+		if (multiPane) {
+			detailViewFragment.updateMovie(movie);
+		}
+		else {
+			Intent intent = new Intent(GridViewActivity.this, DetailViewActivity.class);
+			intent.putExtra(MOVIE_EXTRA_KEY, movie);
+			startActivity(intent);
+		}
 	}
 }

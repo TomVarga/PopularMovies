@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import hu.tvarga.popularmovies.utility.GsonHelper;
 
-public abstract class DAO implements Serializable {
+abstract class DAO implements Serializable {
 
 	private static final long serialVersionUID = -7045461130437698110L;
 

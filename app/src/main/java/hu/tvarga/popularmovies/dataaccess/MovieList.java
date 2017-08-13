@@ -6,6 +6,8 @@ import java.util.List;
 
 public class MovieList extends DAO {
 
+	private static final long serialVersionUID = 8839768078885551151L;
+
 	@SerializedName("page")
 	public int page;
 	@SerializedName("total_results")
@@ -13,5 +15,5 @@ public class MovieList extends DAO {
 	@SerializedName("total_pages")
 	public int totalPages;
 	@SerializedName("results")
-	public List<Movie> results;
+	public List<Movie> results; // NOSONAR
 }

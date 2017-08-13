@@ -17,7 +17,7 @@ class GetMoviesAsyncTask extends AsyncTask<String, Void, String> {
 	private static final String LOG_TAG = GetMoviesAsyncTask.class.getSimpleName();
 	private final GetMoviesAsyncTaskDelegate delegate;
 
-	public GetMoviesAsyncTask(GetMoviesAsyncTaskDelegate delegate) {
+	GetMoviesAsyncTask(GetMoviesAsyncTaskDelegate delegate) {
 		this.delegate = delegate;
 	}
 

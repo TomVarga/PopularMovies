@@ -18,12 +18,12 @@ import hu.tvarga.popularmovies.dataaccess.MovieList;
 import hu.tvarga.popularmovies.utility.GsonHelper;
 
 import static hu.tvarga.popularmovies.GridViewActivity.MULTI_PANE_EXTRA_KEY;
+import static hu.tvarga.popularmovies.utility.UrlHelper.getDefaultUrl;
 
 public class GridViewFragment extends Fragment {
 
 	private GridFragmentCallback gridFragmentCallback;
 	private GridView gridView;
-	private boolean multiPane;
 	private List<Movie> movies = new ArrayList<>();
 	private GridViewAdapter gridViewAdapter;
 	public static final String MOVIE_EXTRA_KEY = "movie";
@@ -38,18 +38,6 @@ public class GridViewFragment extends Fragment {
 		return gridViewFragment;
 	}
 
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		if (savedInstanceState == null) {
-			multiPane = getArguments().getBoolean(MULTI_PANE_EXTRA_KEY);
-		}
-		else {
-			multiPane = savedInstanceState.getBoolean(MULTI_PANE_EXTRA_KEY);
-		}
-	}
-
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -60,7 +48,7 @@ public class GridViewFragment extends Fragment {
 		gridViewAdapter = new GridViewAdapter(getActivity(), movies);
 		gridView.setAdapter(gridViewAdapter);
 
-		String url = BuildConfig.url_default + "api_key=" + BuildConfig.cfg_api_key;
+		String url = getDefaultUrl();
 		startAsyncTask(url);
 
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -97,7 +85,7 @@ public class GridViewFragment extends Fragment {
 		}
 	}
 
-	public interface GridFragmentCallback {
+	interface GridFragmentCallback {
 
 		void openDetailView(Movie movie);
 	}

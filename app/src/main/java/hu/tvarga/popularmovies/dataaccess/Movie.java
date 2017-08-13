@@ -7,7 +7,7 @@ public class Movie extends DAO {
 	private static final long serialVersionUID = -2724296208305320627L;
 
 	@SerializedName("id")
-	int id;
+	public int id;
 	@SerializedName("original_title")
 	public String originalTitle;
 	@SerializedName("release_date")
