@@ -12,12 +12,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-class GetMoviesAsyncTask extends AsyncTask<String, Void, String> {
+class GetAsyncTask extends AsyncTask<String, Void, String> {
 
-	private static final String LOG_TAG = GetMoviesAsyncTask.class.getSimpleName();
+	private static final String LOG_TAG = GetAsyncTask.class.getSimpleName();
 	private final GetMoviesAsyncTaskDelegate delegate;
 
-	GetMoviesAsyncTask(GetMoviesAsyncTaskDelegate delegate) {
+	GetAsyncTask(GetMoviesAsyncTaskDelegate delegate) {
 		this.delegate = delegate;
 	}
 

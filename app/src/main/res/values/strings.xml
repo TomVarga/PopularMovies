@@ -11,5 +11,10 @@
 	<string name="movie_synopsis">Movie synopsis:</string>
 
 	<string name="failed_to_get_movies">"Failed to get movies"</string>
+	<string name="reviews">Reviews:</string>
+	<string name="videos">Videos:</string>
+	<string name="author">Author:</string>
+	<string name="only_youtube_supported">Sorry currently only YouTube is supported</string>
+	<string name="favorite">Favorite</string>
 
 </resources>

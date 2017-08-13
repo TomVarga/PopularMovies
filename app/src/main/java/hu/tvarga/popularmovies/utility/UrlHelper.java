@@ -29,4 +29,12 @@ public abstract class UrlHelper {
 	public static String getUrlSortByRating() {
 		return BuildConfig.url_top_rated + getApiKeyUrlPart();
 	}
+
+	public static String getVideos(int id) {
+		return String.format(BuildConfig.url_videos, id) + getApiKeyUrlPart();
+	}
+
+	public static String getReviews(int id) {
+		return String.format(BuildConfig.url_reviews, id) + getApiKeyUrlPart();
+	}
 }

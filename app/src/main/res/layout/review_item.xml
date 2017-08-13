@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+
+	<TextView
+		android:id="@+id/authorLabel"
+		style="@style/TextStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/author"
+		android:textAllCaps="true" />
+
+	<TextView
+		android:id="@+id/author"
+		android:layout_toEndOf="@id/authorLabel"
+		android:layout_alignBottom="@id/authorLabel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		tools:text="Name of the author" />
+
+	<TextView
+		android:layout_below="@+id/authorLabel"
+		style="@style/TextStyle"
+		android:id="@+id/content"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		tools:text="Content of the review which can be lengthy, so it only fits into multiple lines." />
+
+</RelativeLayout>

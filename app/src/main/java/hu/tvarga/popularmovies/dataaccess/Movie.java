@@ -2,6 +2,8 @@ package hu.tvarga.popularmovies.dataaccess;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Movie extends DAO {
 
 	private static final long serialVersionUID = -2724296208305320627L;
@@ -18,4 +20,7 @@ public class Movie extends DAO {
 	public String posterPath;
 	@SerializedName("overview")
 	public String overview;
+
+	public List<Review> reviews; // NOSONAR
+	public List<Video> videos; // NOSONAR
 }

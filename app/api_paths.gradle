@@ -5,5 +5,7 @@ android {
 		buildConfigField 'String', 'url_sort_by_popularity', '"http://api.themoviedb' +
 				'.org/3/discover/movie?sort_by=popularity.desc"'
 		buildConfigField 'String', 'url_top_rated', '"http://api.themoviedb.org/3/movie/top_rated?"'
+		buildConfigField 'String', 'url_videos', '"http://api.themoviedb.org/3/movie/%s/videos?"'
+		buildConfigField 'String', 'url_reviews', '"http://api.themoviedb.org/3/movie/%s/reviews?"'
 	}
 }
