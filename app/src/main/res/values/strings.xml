@@ -3,4 +3,8 @@
 
 	<string name="action_sort_by_popularity">Most popular first</string>
 	<string name="action_sort_by_rating">Highest rated first</string>
+
+	<string name="movie_poster">Movie poster</string>
+	<string name="movie_detail">Movie detail</string>
+
 </resources>
