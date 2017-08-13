@@ -11,7 +11,18 @@ public class UrlHelper {
 	}
 
 	@NonNull
+	private static String getApiKeyUrlPart() {return "api_key=" + BuildConfig.cfg_api_key;}
+
+	@NonNull
 	public static String getDefaultUrl() {
-		return BuildConfig.url_default + "api_key=" + BuildConfig.cfg_api_key;
+		return BuildConfig.url_default + getApiKeyUrlPart();
+	}
+
+	public static String getUrlSortByPopularity() {
+		return BuildConfig.url_sort_by_popularity + "&" + getApiKeyUrlPart();
+	}
+
+	public static String getUrlSortByRating() {
+		return BuildConfig.url_top_rated + getApiKeyUrlPart();
 	}
 }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import hu.tvarga.popularmovies.dataaccess.Movie;
+import hu.tvarga.popularmovies.utility.UrlHelper;
 
 import static hu.tvarga.popularmovies.GridViewFragment.MOVIE_EXTRA_KEY;
 
@@ -66,12 +67,14 @@ public class GridViewActivity extends AppCompatActivity
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 
+		String url = null;
 		if (id == R.id.actionSortByPopularity) {
-			return true;
+			url = UrlHelper.getUrlSortByPopularity();
 		}
 		else if (id == R.id.actionSortByRating) {
-			return true;
+			url = UrlHelper.getUrlSortByRating();
 		}
+		gridViewFragment.update(url);
 
 		return super.onOptionsItemSelected(item);
 	}

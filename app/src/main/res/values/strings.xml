@@ -10,4 +10,6 @@
 	<string name="votes">Votes:</string>
 	<string name="movie_synopsis">Movie synopsis:</string>
 
+	<string name="failed_to_get_movies">"Failed to get movies"</string>
+
 </resources>

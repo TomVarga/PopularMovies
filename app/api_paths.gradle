@@ -2,7 +2,7 @@ android {
 	defaultConfig {
 		buildConfigField 'String', 'url_poster', '"http://image.tmdb.org/t/p/"'
 		buildConfigField 'String', 'url_default', '"http://api.themoviedb.org/3/discover/movie?"'
-		buildConfigField 'String', 'rl_sort_by_popularity', '"http://api.themoviedb' +
+		buildConfigField 'String', 'url_sort_by_popularity', '"http://api.themoviedb' +
 				'.org/3/discover/movie?sort_by=popularity.desc"'
 		buildConfigField 'String', 'url_top_rated', '"http://api.themoviedb.org/3/movie/top_rated?"'
 	}

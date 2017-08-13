@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,10 @@ public class GridViewFragment extends Fragment {
 		return rootView;
 	}
 
+	public void update(String url) {
+		startAsyncTask(url);
+	}
+
 	private void startAsyncTask(String url) {
 		GetMoviesAsyncTask getMoviesAsyncTask = new GetMoviesAsyncTask(
 				new GetMoviesAsyncTask.GetMoviesAsyncTaskDelegate() {
@@ -69,9 +74,14 @@ public class GridViewFragment extends Fragment {
 					public void onPostExecute(String result) {
 						MovieList movieList = GsonHelper.getGson().fromJson(result,
 								MovieList.class);
+						if (movieList == null || movieList.results == null) {
+							Toast.makeText(getContext(), getString(R.string.failed_to_get_movies),
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
 						movies.clear();
 						movies.addAll(movieList.results);
-						gridViewAdapter.notifyDataSetInvalidated();
+						gridViewAdapter.notifyDataSetChanged();
 					}
 				});
 		getMoviesAsyncTask.execute(url);
