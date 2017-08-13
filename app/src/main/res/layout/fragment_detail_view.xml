@@ -1,70 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:background="@android:color/white"
-	android:orientation="vertical"
 	android:visibility="invisible"
 	tools:visibility="visible">
 
-	<TextView
-		style="@style/TextStyle"
-		android:id="@+id/title"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textColor="@android:color/black"
-		android:textSize="30sp"
-		tools:text="Title"
-		/>
-
-	<TextView
-		style="@style/TextStyle"
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textAllCaps="true"
-		android:text="@string/release_date" />
+		android:orientation="vertical">
 
-	<TextView
-		style="@style/TextStyle"
-		android:id="@+id/releaseDate"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		tools:text="2017" />
+		<TextView
+			android:id="@+id/title"
+			style="@style/TextStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="@android:color/black"
+			android:textSize="30sp"
+			tools:text="Title"
+			/>
 
-	<ImageView
-		android:id="@+id/moviePoster"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:contentDescription="@string/movie_poster"
-		tools:src="@android:drawable/ic_menu_report_image" />
+		<TextView
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/release_date"
+			android:textAllCaps="true" />
 
-	<TextView
-		style="@style/TextStyle"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:textAllCaps="true"
-		android:text="@string/votes" />
+		<TextView
+			android:id="@+id/releaseDate"
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			tools:text="2017" />
 
-	<TextView
-		style="@style/TextStyle"
-		android:id="@+id/votes"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		tools:text="5.0" />
+		<ImageView
+			android:id="@+id/moviePoster"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/movie_poster"
+			tools:src="@android:drawable/ic_menu_report_image" />
 
-	<TextView
-		style="@style/TextStyle"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/movie_synopsis" />
+		<TextView
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/votes"
+			android:textAllCaps="true" />
 
-	<TextView
-		style="@style/TextStyle"
-		android:id="@+id/synopsis"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		tools:text="Movie synopsis" />
+		<TextView
+			android:id="@+id/votes"
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			tools:text="5.0" />
 
-</LinearLayout>
+		<TextView
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/movie_synopsis" />
+
+		<TextView
+			android:id="@+id/synopsis"
+			style="@style/TextStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			tools:text="Movie synopsis" />
+
+	</LinearLayout>
+</ScrollView>
