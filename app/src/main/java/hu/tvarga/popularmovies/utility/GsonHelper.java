@@ -7,6 +7,7 @@ public class GsonHelper {
 	private static Gson gson;
 
 	private GsonHelper() {
+		// hide public constructor
 	}
 
 	public static Gson getGson() {

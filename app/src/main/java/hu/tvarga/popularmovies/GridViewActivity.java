@@ -13,6 +13,7 @@ import hu.tvarga.popularmovies.utility.UrlHelper;
 
 import static hu.tvarga.popularmovies.GridViewFragment.MOVIE_EXTRA_KEY;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class GridViewActivity extends AppCompatActivity
 		implements GridViewFragment.GridFragmentCallback {
 

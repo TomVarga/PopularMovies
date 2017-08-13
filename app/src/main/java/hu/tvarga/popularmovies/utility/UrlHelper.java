@@ -4,7 +4,11 @@ import android.support.annotation.NonNull;
 
 import hu.tvarga.popularmovies.BuildConfig;
 
-public class UrlHelper {
+public abstract class UrlHelper {
+
+	private UrlHelper() {
+		// hide public constructor
+	}
 
 	public static String getPosterUrl(String posterPath) {
 		return BuildConfig.url_poster + "w185" + posterPath;

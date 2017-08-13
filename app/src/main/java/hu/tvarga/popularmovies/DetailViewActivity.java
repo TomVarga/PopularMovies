@@ -11,9 +11,9 @@ import hu.tvarga.popularmovies.dataaccess.Movie;
 
 import static hu.tvarga.popularmovies.GridViewFragment.MOVIE_EXTRA_KEY;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class DetailViewActivity extends AppCompatActivity {
 
-	private Movie movie;
 	private DetailViewFragment detailViewFragment;
 
 	@Override
@@ -21,7 +21,7 @@ public class DetailViewActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		movie = (Movie) intent.getSerializableExtra(MOVIE_EXTRA_KEY);
+		Movie movie = (Movie) intent.getSerializableExtra(MOVIE_EXTRA_KEY);
 
 		setContentView(R.layout.activity_detail_view);
 

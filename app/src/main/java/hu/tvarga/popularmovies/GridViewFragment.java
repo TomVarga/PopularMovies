@@ -24,7 +24,6 @@ import static hu.tvarga.popularmovies.utility.UrlHelper.getDefaultUrl;
 public class GridViewFragment extends Fragment {
 
 	private GridFragmentCallback gridFragmentCallback;
-	private GridView gridView;
 	private List<Movie> movies = new ArrayList<>();
 	private GridViewAdapter gridViewAdapter;
 	public static final String MOVIE_EXTRA_KEY = "movie";
@@ -45,7 +44,7 @@ public class GridViewFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_grid_view, container, false);
 
-		gridView = rootView.findViewById(R.id.gridView);
+		GridView gridView = rootView.findViewById(R.id.gridView);
 		gridViewAdapter = new GridViewAdapter(getActivity(), movies);
 		gridView.setAdapter(gridViewAdapter);
 

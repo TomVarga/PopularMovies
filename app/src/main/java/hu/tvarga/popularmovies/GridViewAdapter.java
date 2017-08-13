@@ -1,5 +1,6 @@
 package hu.tvarga.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,12 @@ import hu.tvarga.popularmovies.dataaccess.Movie;
 
 import static hu.tvarga.popularmovies.utility.UrlHelper.getPosterUrl;
 
-public class GridViewAdapter extends BaseAdapter {
+class GridViewAdapter extends BaseAdapter {
 
 	private final Context context;
 	private final List<Movie> movies;
 
-	public GridViewAdapter(Context context, List<Movie> movies) {
+	GridViewAdapter(Context context, List<Movie> movies) {
 		this.context = context;
 		this.movies = movies;
 	}
@@ -40,6 +41,7 @@ public class GridViewAdapter extends BaseAdapter {
 		return 0;
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int i, View view, ViewGroup viewGroup) {
 		View viewItem = view;
