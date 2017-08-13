@@ -39,18 +39,18 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>
 				LayoutInflater.from(context).inflate(R.layout.review_item, parent, false));
 	}
 
-	public class ReviewViewHolder extends ButterKnifeViewHolder {
+	class ReviewViewHolder extends ButterKnifeViewHolder {
 
 		@BindView(R.id.author)
 		TextView author;
 		@BindView(R.id.content)
 		TextView content;
 
-		public ReviewViewHolder(View itemView) {
+		ReviewViewHolder(View itemView) {
 			super(itemView);
 		}
 
-		public void onBind(Review review) {
+		void onBind(Review review) {
 			author.setText(review.author);
 			content.setText(review.content);
 		}

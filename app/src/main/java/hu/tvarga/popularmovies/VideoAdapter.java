@@ -42,16 +42,16 @@ class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
 				LayoutInflater.from(context).inflate(R.layout.video_item, parent, false));
 	}
 
-	public class VideoViewHolder extends ButterKnifeViewHolder {
+	class VideoViewHolder extends ButterKnifeViewHolder {
 
 		@BindView(R.id.title)
 		TextView title;
 
-		public VideoViewHolder(View itemView) {
+		VideoViewHolder(View itemView) {
 			super(itemView);
 		}
 
-		public void onBind(final Video video) {
+		void onBind(final Video video) {
 			title.setText(video.name);
 			itemView.setOnClickListener(new View.OnClickListener() {
 				@Override
