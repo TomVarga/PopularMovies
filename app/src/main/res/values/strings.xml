@@ -17,4 +17,6 @@
 	<string name="only_youtube_supported">Sorry currently only YouTube is supported</string>
 	<string name="favorite">Favorite</string>
 
+	<string name="content_authority">hu.tvarga.popularmovies</string>
+
 </resources>

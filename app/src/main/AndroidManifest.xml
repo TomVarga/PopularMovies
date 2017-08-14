@@ -25,6 +25,11 @@
 			android:label="@string/movie_detail"
 			android:parentActivityName=".GridViewActivity">
 		</activity>
+
+		<provider
+			android:name=".dataaccess.database.MovieProvider"
+			android:authorities="@string/content_authority"
+			android:exported="false" />
 	</application>
 
 </manifest>

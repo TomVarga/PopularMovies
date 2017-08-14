@@ -1,9 +1,16 @@
 package hu.tvarga.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +25,40 @@ import hu.tvarga.popularmovies.dataaccess.Movie;
 import hu.tvarga.popularmovies.dataaccess.MovieList;
 import hu.tvarga.popularmovies.dataaccess.ReviewList;
 import hu.tvarga.popularmovies.dataaccess.VideoList;
+import hu.tvarga.popularmovies.dataaccess.database.MovieContract;
 import hu.tvarga.popularmovies.utility.GsonHelper;
 import hu.tvarga.popularmovies.utility.UrlHelper;
 
 import static hu.tvarga.popularmovies.GridViewActivity.MULTI_PANE_EXTRA_KEY;
 import static hu.tvarga.popularmovies.utility.UrlHelper.getDefaultUrl;
 
-public class GridViewFragment extends Fragment {
+public class GridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+	public static final String[] MAIN_MOVIE_PROJECTION =
+			{MovieContract.MovieEntry.COLUMN_MOVIE_ID, MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+					MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+					MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+					MovieContract.MovieEntry.COLUMN_OVERVIEW,
+					MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,};
+
+	public static final int INDEX_MOVIE_MOVIE_ID = 0;
+	public static final int INDEX_MOVIE_RELEASE_DATE = 1;
+	public static final int INDEX_MOVIE_VOTE_AVERAGE = 2;
+	public static final int INDEX_MOVIE_POSTER_PATH = 3;
+	public static final int INDEX_MOVIE_OVERVIEW = 4;
+	public static final int INDEX_MOVIE_ORIGINAL_TITLE = 5;
+
+	public static final int ID_MOVIE_LOADER = 44;
 
 	private GridFragmentCallback gridFragmentCallback;
-	private List<Movie> movies = new ArrayList<>();
-	private GridViewAdapter gridViewAdapter;
+	GridViewAdapter gridViewAdapter;
+	Cursor cursor;
+	int position;
 	public static final String MOVIE_EXTRA_KEY = "movie";
 
 	private boolean videoDownloadCompleted;
 	private boolean reviewDownloadCompleted;
+	GridView gridView;
 
 	public static GridViewFragment newInstance(boolean multiPane) {
 		GridViewFragment gridViewFragment = new GridViewFragment();
@@ -50,8 +76,8 @@ public class GridViewFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_grid_view, container, false);
 
-		GridView gridView = rootView.findViewById(R.id.gridView);
-		gridViewAdapter = new GridViewAdapter(getActivity(), movies);
+		gridView = rootView.findViewById(R.id.gridView);
+		gridViewAdapter = new GridViewAdapter(getActivity());
 		gridView.setAdapter(gridViewAdapter);
 
 		String url = getDefaultUrl();
@@ -60,12 +86,50 @@ public class GridViewFragment extends Fragment {
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Movie movie = movies.get(position);
+				cursor.moveToPosition(position);
+				Movie movie = new Movie();
+				movie.id = cursor.getInt(INDEX_MOVIE_MOVIE_ID);
+				movie.releaseDate = cursor.getString(INDEX_MOVIE_RELEASE_DATE);
+				movie.voteAverage = cursor.getString(INDEX_MOVIE_VOTE_AVERAGE);
+				movie.posterPath = cursor.getString(INDEX_MOVIE_POSTER_PATH);
+				movie.overview = cursor.getString(INDEX_MOVIE_OVERVIEW);
+				movie.originalTitle = cursor.getString(INDEX_MOVIE_ORIGINAL_TITLE);
 				getReviewsAndVideos(movie);
 			}
 		});
 
 		return rootView;
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+
+		switch (loaderId) {
+
+			case ID_MOVIE_LOADER:
+				Uri movieQueryUri = MovieContract.MovieEntry.CONTENT_URI;
+				return new CursorLoader(getContext(), movieQueryUri, MAIN_MOVIE_PROJECTION, null,
+						null, null);
+
+			default:
+				throw new RuntimeException("Loader Not Implemented: " + loaderId);
+		}
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+		gridViewAdapter.swapCursor(data);
+		cursor = data;
+		if (position == RecyclerView.NO_POSITION) {
+			position = 0;
+		}
+		gridView.smoothScrollToPosition(position);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		gridViewAdapter.swapCursor(null);
 	}
 
 	private void getReviewsAndVideos(final Movie movie) {
@@ -124,12 +188,27 @@ public class GridViewFragment extends Fragment {
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
-						movies.clear();
-						movies.addAll(movieList.results);
-						gridViewAdapter.notifyDataSetChanged();
+						insertMoviesDataToDb(movieList.results);
 					}
 				});
 		getAsyncTask.execute(url);
+	}
+
+	private void insertMoviesDataToDb(List<Movie> results) {
+		List<ContentValues> values = new ArrayList<>();
+		for (Movie movie : results) {
+			ContentValues movieValues = new ContentValues();
+			movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
+			movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.releaseDate);
+			movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.voteAverage);
+			movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.posterPath);
+			movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.overview);
+			movieValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.originalTitle);
+			values.add(movieValues);
+		}
+		getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI,
+				values.toArray(new ContentValues[values.size()]));
+
 	}
 
 	@Override
@@ -138,6 +217,7 @@ public class GridViewFragment extends Fragment {
 		if (context instanceof GridFragmentCallback) {
 			gridFragmentCallback = (GridFragmentCallback) context;
 		}
+		getActivity().getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
 	}
 
 	interface GridFragmentCallback {
