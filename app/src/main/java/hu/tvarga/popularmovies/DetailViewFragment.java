@@ -1,5 +1,6 @@
 package hu.tvarga.popularmovies;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import butterknife.Unbinder;
 import hu.tvarga.popularmovies.dataaccess.Movie;
 import hu.tvarga.popularmovies.dataaccess.Review;
 import hu.tvarga.popularmovies.dataaccess.Video;
+import hu.tvarga.popularmovies.dataaccess.database.MovieContract;
 
 import static hu.tvarga.popularmovies.GridViewFragment.MOVIE_EXTRA_KEY;
 import static hu.tvarga.popularmovies.utility.UrlHelper.getPosterUrl;
@@ -115,8 +117,6 @@ public class DetailViewFragment extends Fragment {
 
 		recyclerViewVideos.addItemDecoration(dividerItemDecoration);
 
-		favoriteCheckBox.setOnCheckedChangeListener(getOnCheckedListener());
-
 		if (movie != null) {
 			updateMovie(movie);
 		}
@@ -129,7 +129,28 @@ public class DetailViewFragment extends Fragment {
 		return new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+				movie.favorite = checked;
+				if (checked) {
+					ContentValues movieValues = new ContentValues();
+					movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, movie.id);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+							movie.releaseDate);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+							movie.voteAverage);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.posterPath);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movie.overview);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+							movie.originalTitle);
+					movieValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, movie.favorite);
 
+					getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,
+							movieValues);
+				}
+				else {
+					getContext().getContentResolver().delete(
+							MovieContract.MovieEntry.CONTENT_URI.buildUpon()
+									.appendPath(Integer.toString(movie.id)).build(), null, null);
+				}
 			}
 		};
 	}
@@ -139,6 +160,9 @@ public class DetailViewFragment extends Fragment {
 		this.movie = movie;
 		updateExtraData();
 
+		favoriteCheckBox.setOnCheckedChangeListener(null);
+		favoriteCheckBox.setChecked(movie.favorite);
+		favoriteCheckBox.setOnCheckedChangeListener(getOnCheckedListener());
 		title.setText(movie.originalTitle);
 		releaseDate.setText(movie.releaseDate);
 		votes.setText(movie.voteAverage);

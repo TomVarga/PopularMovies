@@ -3,6 +3,7 @@ package hu.tvarga.popularmovies.dataaccess.database;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,10 +13,12 @@ import android.support.annotation.Nullable;
 
 public class MovieProvider extends ContentProvider {
 
+	public static final String FILTER = " = ? ";
 	public static final int CODE_MOVIE = 100;
 	public static final int CODE_MOVIE_WITH_ID = 101;
 
 	private static final UriMatcher sUriMatcher = buildUriMatcher();
+
 	private MoviesDbHelper openHelper;
 
 	public static UriMatcher buildUriMatcher() {
@@ -39,32 +42,74 @@ public class MovieProvider extends ContentProvider {
 	public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
 		final SQLiteDatabase db = openHelper.getWritableDatabase();
 
-		switch (sUriMatcher.match(uri)) {
-
-			case CODE_MOVIE:
-				db.beginTransaction();
-				int rowsInserted = 0;
-				try {
-					for (ContentValues value : values) {
-						long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
-						if (_id != -1) {
-							rowsInserted++;
-						}
+		int i = sUriMatcher.match(uri);
+		if (i == CODE_MOVIE) {
+			db.beginTransaction();
+			int rowsInserted = 0;
+			try {
+				for (ContentValues value : values) {
+					long id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
+					if (id != -1) {
+						rowsInserted++;
 					}
-					db.setTransactionSuccessful();
 				}
-				finally {
-					db.endTransaction();
+				db.setTransactionSuccessful();
+			}
+			finally {
+				db.endTransaction();
+			}
+
+			if (rowsInserted > 0) {
+				Context context = getContext();
+				if (context != null) {
+					context.getContentResolver().notifyChange(uri, null);
 				}
+			}
 
-				if (rowsInserted > 0) {
-					getContext().getContentResolver().notifyChange(uri, null);
+			return rowsInserted;
+		}
+		else {
+			return super.bulkInsert(uri, values);
+		}
+	}
+
+	@Override
+	public int update(@NonNull Uri uri, @Nullable ContentValues contentValues,
+			@Nullable String selection, @Nullable String[] selectionArgs) {
+		final SQLiteDatabase db = openHelper.getWritableDatabase();
+
+		int i = sUriMatcher.match(uri);
+		if (i == CODE_MOVIE_WITH_ID) {
+			db.beginTransaction();
+			int rowsUpdated = 0;
+
+			String movieId = uri.getLastPathSegment();
+
+			String[] selectionArguments = new String[]{movieId};
+
+			try {
+				long id = db.update(MovieContract.MovieEntry.TABLE_NAME, contentValues,
+						MovieContract.MovieEntry.COLUMN_MOVIE_ID + FILTER, selectionArguments);
+				if (id != -1) {
+					rowsUpdated++;
 				}
+				db.setTransactionSuccessful();
+			}
+			finally {
+				db.endTransaction();
+			}
 
-				return rowsInserted;
+			if (rowsUpdated > 0) {
+				Context context = getContext();
+				if (context != null) {
+					context.getContentResolver().notifyChange(uri, null);
+				}
+			}
 
-			default:
-				return super.bulkInsert(uri, values);
+			return rowsUpdated;
+		}
+		else {
+			return 0;
 		}
 	}
 
@@ -76,44 +121,69 @@ public class MovieProvider extends ContentProvider {
 
 		switch (sUriMatcher.match(uri)) {
 
-			case CODE_MOVIE_WITH_ID: {
+			case CODE_MOVIE_WITH_ID:
 
 				String id = uri.getLastPathSegment();
 
 				String[] selectionArguments = new String[]{id};
 
 				cursor = openHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,
-						projection, MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+						projection, MovieContract.MovieEntry.COLUMN_MOVIE_ID + FILTER,
 						selectionArguments, null, null, sortOrder);
 
 				break;
-			}
 
-			case CODE_MOVIE: {
+			case CODE_MOVIE:
 				cursor = openHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,
 						projection, selection, selectionArgs, null, null, sortOrder);
 
 				break;
-			}
 
 			default:
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
 
-		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		Context context = getContext();
+		if (context != null) {
+			cursor.setNotificationUri(context.getContentResolver(), uri);
+		}
 		return cursor;
 	}
 
 	@Nullable
 	@Override
 	public String getType(@NonNull Uri uri) {
-		throw new RuntimeException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Nullable
 	@Override
 	public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-		throw new RuntimeException("Not implemented");
+		final SQLiteDatabase db = openHelper.getWritableDatabase();
+
+		int i = sUriMatcher.match(uri);
+		if (i == CODE_MOVIE) {
+			db.beginTransaction();
+			int rowsInserted = 0;
+			try {
+				long id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+				if (id != -1) {
+					rowsInserted++;
+				}
+				db.setTransactionSuccessful();
+			}
+			finally {
+				db.endTransaction();
+			}
+
+			if (rowsInserted > 0) {
+				Context context = getContext();
+				if (context != null) {
+					context.getContentResolver().notifyChange(uri, null);
+				}
+			}
+		}
+		return uri;
 	}
 
 	@Override
@@ -121,16 +191,26 @@ public class MovieProvider extends ContentProvider {
 			@Nullable String[] selectionArgs) {
 		int numRowsDeleted;
 
+		String selectionOfTransaction = selection;
+
 		if (null == selection) {
-			selection = "1";
+			selectionOfTransaction = "1";
 		}
 
 		switch (sUriMatcher.match(uri)) {
 
 			case CODE_MOVIE:
 				numRowsDeleted = openHelper.getWritableDatabase().delete(
-						MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+						MovieContract.MovieEntry.TABLE_NAME, selectionOfTransaction, selectionArgs);
 
+				break;
+
+			case CODE_MOVIE_WITH_ID:
+				String id = uri.getLastPathSegment();
+				String[] selectionArguments = new String[]{id};
+				numRowsDeleted = openHelper.getWritableDatabase().delete(
+						MovieContract.MovieEntry.TABLE_NAME,
+						MovieContract.MovieEntry.COLUMN_MOVIE_ID + FILTER, selectionArguments);
 				break;
 
 			default:
@@ -138,16 +218,13 @@ public class MovieProvider extends ContentProvider {
 		}
 
 		if (numRowsDeleted != 0) {
-			getContext().getContentResolver().notifyChange(uri, null);
+			Context context = getContext();
+			if (context != null) {
+				context.getContentResolver().notifyChange(uri, null);
+			}
 		}
 
 		return numRowsDeleted;
-	}
-
-	@Override
-	public int update(@NonNull Uri uri, @Nullable ContentValues contentValues,
-			@Nullable String selection, @Nullable String[] selectionArgs) {
-		throw new RuntimeException("Not implemented");
 	}
 
 	@Override

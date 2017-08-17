@@ -19,6 +19,7 @@ public class GridViewActivity extends AppCompatActivity
 
 	public static final String MULTI_PANE_EXTRA_KEY = "multiPane";
 	public static final String GRID_FRAGMENT_SAVED_INSTANCE_KEY = "gridFragment";
+	public static final String FAVORITE = "favorite";
 
 	private boolean multiPane;
 	private GridViewFragment gridViewFragment;
@@ -74,6 +75,9 @@ public class GridViewActivity extends AppCompatActivity
 		}
 		else if (id == R.id.actionSortByRating) {
 			url = UrlHelper.getUrlSortByRating();
+		}
+		else if (id == R.id.actionFavorite) {
+			url = FAVORITE;
 		}
 		gridViewFragment.update(url);
 

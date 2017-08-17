@@ -21,6 +21,8 @@ public class Movie extends DAO {
 	@SerializedName("overview")
 	public String overview;
 
+	public boolean favorite; // NOSONAR
+
 	public List<Review> reviews; // NOSONAR
 	public List<Video> videos; // NOSONAR
 }

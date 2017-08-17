@@ -2,7 +2,6 @@ package hu.tvarga.popularmovies;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,23 +10,25 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import hu.tvarga.popularmovies.dataaccess.Movie;
+
 import static hu.tvarga.popularmovies.utility.UrlHelper.getPosterUrl;
 
 class GridViewAdapter extends BaseAdapter {
 
 	private final Context context;
-	private Cursor cursor;
+	private final List<Movie> movies;
 
-	GridViewAdapter(Context context) {
+	GridViewAdapter(Context context, List<Movie> movies) {
 		this.context = context;
+		this.movies = movies;
 	}
 
 	@Override
 	public int getCount() {
-		if (null == cursor) {
-			return 0;
-		}
-		return cursor.getCount();
+		return movies.size();
 	}
 
 	@Override
@@ -51,17 +52,10 @@ class GridViewAdapter extends BaseAdapter {
 			viewItem = inflater.inflate(R.layout.grid_item, null);
 		}
 
-		cursor.moveToPosition(i);
+		Movie movie = movies.get(i);
 		ImageView imageView = viewItem.findViewById(R.id.moviePoster);
-		Picasso.with(context).load(
-				getPosterUrl(cursor.getString(GridViewFragment.INDEX_MOVIE_POSTER_PATH))).into(
-				imageView);
+		Picasso.with(context).load(getPosterUrl(movie.posterPath)).into(imageView);
 
 		return viewItem;
-	}
-
-	public void swapCursor(Cursor data) {
-		cursor = data;
-		notifyDataSetChanged();
 	}
 }

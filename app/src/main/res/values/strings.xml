@@ -18,5 +18,6 @@
 	<string name="favorite">Favorite</string>
 
 	<string name="content_authority">hu.tvarga.popularmovies</string>
+	<string name="favorites">Favorites</string>
 
 </resources>
