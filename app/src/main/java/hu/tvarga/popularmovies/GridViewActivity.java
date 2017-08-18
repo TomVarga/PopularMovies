@@ -48,7 +48,7 @@ public class GridViewActivity extends AppCompatActivity
 		}
 
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.movieGridContainer, gridViewFragment);
+		fragmentTransaction.replace(R.id.movieGridContainer, gridViewFragment);
 		fragmentTransaction.commit();
 
 		if (multiPane) {
@@ -115,9 +115,9 @@ public class GridViewActivity extends AppCompatActivity
 
 	@Override
 	public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-		super.onSaveInstanceState(outState, outPersistentState);
 		getSupportFragmentManager().putFragment(outState, GRID_FRAGMENT_SAVED_INSTANCE_KEY,
 				gridViewFragment);
+		super.onSaveInstanceState(outState, outPersistentState);
 	}
 
 	@Override

@@ -215,7 +215,11 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 				}
 				movies.clear();
 				movies.addAll(movieList.results);
-				Cursor query = getContext().getContentResolver().query(
+				Context context = getContext();
+				if (context == null) {
+					return;
+				}
+				Cursor query = context.getContentResolver().query(
 						MovieContract.MovieEntry.CONTENT_URI, MAIN_MOVIE_PROJECTION, null, null,
 						null);
 				handleDbChange(query);
