@@ -1,6 +1,7 @@
 package hu.tvarga.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import hu.tvarga.popularmovies.utility.UrlHelper;
 
 import static hu.tvarga.popularmovies.GridViewActivity.FAVORITE;
 import static hu.tvarga.popularmovies.GridViewActivity.MULTI_PANE_EXTRA_KEY;
+import static hu.tvarga.popularmovies.GridViewActivity.getSharedPreferences;
 import static hu.tvarga.popularmovies.utility.UrlHelper.getDefaultUrl;
 
 public class GridViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -43,6 +45,8 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 	public static final int INDEX_MOVIE_FAVORITE = 1;
 
 	public static final int ID_MOVIE_LOADER = 44;
+	public static final String FILTER_SHARED_PREFERENCES_KEY = "FILTER_SHARED_PREFERENCES_KEY";
+	public static final String FIRST_VISIBLE_POSITION = "FIRST_VISIBLE_POSITION";
 
 	private GridFragmentCallback gridFragmentCallback;
 	private GridViewAdapter gridViewAdapter;
@@ -51,6 +55,7 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 	private boolean videoDownloadCompleted;
 	private boolean reviewDownloadCompleted;
 	private boolean favoritesOnly;
+	GridView gridView;
 
 	public static GridViewFragment newInstance(boolean multiPane) {
 		GridViewFragment gridViewFragment = new GridViewFragment();
@@ -68,7 +73,7 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_grid_view, container, false);
 
-		GridView gridView = rootView.findViewById(R.id.gridView);
+		gridView = rootView.findViewById(R.id.gridView);
 		gridViewAdapter = new GridViewAdapter(getActivity(), movies);
 		gridView.setAdapter(gridViewAdapter);
 
@@ -121,6 +126,9 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 		}
 
 		gridViewAdapter.notifyDataSetChanged();
+		SharedPreferences sharedPreferences = getSharedPreferences(getContext());
+		int firstVisibleItem = sharedPreferences.getInt(FIRST_VISIBLE_POSITION, 0);
+		gridView.smoothScrollToPosition(firstVisibleItem);
 	}
 
 	@Override
@@ -165,7 +173,11 @@ public class GridViewFragment extends Fragment implements LoaderManager.LoaderCa
 
 	private void handleExtraDownloadSuccess(Movie movie) {
 		if (videoDownloadCompleted && reviewDownloadCompleted) {
-			Cursor query = getContext().getContentResolver().query(
+			Context context = getContext();
+			if (context == null) {
+				return;
+			}
+			Cursor query = context.getContentResolver().query(
 					MovieContract.MovieEntry.CONTENT_URI.buildUpon()
 							.appendPath(Integer.toString(movie.id)).build(), MAIN_MOVIE_PROJECTION,
 					null, null, null);

@@ -1,6 +1,8 @@
 package hu.tvarga.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +13,8 @@ import android.view.MenuItem;
 import hu.tvarga.popularmovies.dataaccess.Movie;
 import hu.tvarga.popularmovies.utility.UrlHelper;
 
+import static hu.tvarga.popularmovies.GridViewFragment.FILTER_SHARED_PREFERENCES_KEY;
+import static hu.tvarga.popularmovies.GridViewFragment.FIRST_VISIBLE_POSITION;
 import static hu.tvarga.popularmovies.GridViewFragment.MOVIE_EXTRA_KEY;
 
 @SuppressWarnings("squid:MaximumInheritanceDepth")
@@ -79,9 +83,34 @@ public class GridViewActivity extends AppCompatActivity
 		else if (id == R.id.actionFavorite) {
 			url = FAVORITE;
 		}
+		SharedPreferences sharedPreferences = getSharedPreferences(this);
+		sharedPreferences.edit().putString(FILTER_SHARED_PREFERENCES_KEY, url).apply();
+		sharedPreferences.edit().putInt(FIRST_VISIBLE_POSITION, 0).apply();
 		gridViewFragment.update(url);
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	public static SharedPreferences getSharedPreferences(Context context) {
+		return context.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE);
+	}
+
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		SharedPreferences sharedPreferences = getSharedPreferences(this);
+		String filter = sharedPreferences.getString(FILTER_SHARED_PREFERENCES_KEY,
+				UrlHelper.getUrlSortByPopularity());
+		gridViewFragment.update(filter);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		SharedPreferences sharedPreferences = getSharedPreferences(this);
+		sharedPreferences.edit().putInt(FIRST_VISIBLE_POSITION,
+				gridViewFragment.gridView.getFirstVisiblePosition()).apply();
 	}
 
 	@Override
@@ -93,6 +122,9 @@ public class GridViewActivity extends AppCompatActivity
 
 	@Override
 	public void openDetailView(Movie movie) {
+		SharedPreferences sharedPreferences = getSharedPreferences(this);
+		sharedPreferences.edit().putInt(FIRST_VISIBLE_POSITION,
+				gridViewFragment.gridView.getFirstVisiblePosition()).apply();
 		if (multiPane) {
 			detailViewFragment.updateMovie(movie);
 		}
